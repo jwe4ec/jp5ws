@@ -7,7 +7,10 @@
 # Load packages ----
 # ---------------------------------------------------------------------------- #
 
-library(dplyr)
+library(groundhog)
+groundhog_day <- "2020-06-05"
+
+groundhog.library(dplyr, groundhog_day)
 
 # ---------------------------------------------------------------------------- #
 # Set working directory ----
@@ -127,7 +130,7 @@ randomizeTbl <- read.csv("./Data/Raw/report_Aug_19_2018.csv")
 colnames(randomizeTbl)[colnames(randomizeTbl) == 
                          "?..id"] <- "id"
 colnames(randomizeTbl)[colnames(randomizeTbl) == 
-                         "ï..id"] <- "id"
+                         "?..id"] <- "id"
 
 colnames(randomizeTbl)[colnames(randomizeTbl) == 
                          "cast.p.admin.as.UNSIGNED."] <- "admin"

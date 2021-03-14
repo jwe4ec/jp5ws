@@ -7,16 +7,19 @@
 # Load packages and set seed ----
 # ---------------------------------------------------------------------------- #
 
-library(data.table)
-library(plyr)
-library(dplyr)
-library(DescTools)
-library(ggplot2)
-library(car)
-library(psych)
-library(jomo)
-library(mitml)
-library(nlme)
+library(groundhog)
+groundhog_day <- "2020-07-12"
+
+groundhog.library(data.table, groundhog_day)
+groundhog.library(plyr, groundhog_day)
+groundhog.library(dplyr, groundhog_day)
+groundhog.library(DescTools, groundhog_day)
+groundhog.library(ggplot2, groundhog_day)
+groundhog.library(car, groundhog_day)
+groundhog.library(psych, groundhog_day)
+groundhog.library(jomo, groundhog_day)
+groundhog.library(mitml, groundhog_day)
+groundhog.library(nlme, groundhog_day)
 
 set.seed(1234)
 

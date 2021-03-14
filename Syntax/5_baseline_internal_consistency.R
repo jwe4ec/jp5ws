@@ -7,9 +7,12 @@
 # Load packages and set seed ----
 # ---------------------------------------------------------------------------- #
 
-library(psych)
-library(MBESS)
-library(OpenMx)
+library(groundhog)
+groundhog_day <- "2020-06-03"
+
+groundhog.library(psych, groundhog_day)
+groundhog.library(MBESS, groundhog_day)
+groundhog.library(OpenMx, groundhog_day)
 
 set.seed(1234)
 

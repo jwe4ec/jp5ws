@@ -7,9 +7,12 @@
 # Load packages and set seed ----
 # ---------------------------------------------------------------------------- #
 
-library(dplyr)
-library(ggplot2)
-library(car)
+library(groundhog)
+groundhog_day <- "2019-11-02"
+
+groundhog.library(dplyr, groundhog_day)
+groundhog.library(ggplot2, groundhog_day)
+groundhog.library(car, groundhog_day)
 
 # Note: plyr is loaded in "Income" section.
 
@@ -255,7 +258,7 @@ kruskal.test(d$educationGrpNew2, d$condition)
 
 summary(d$income)
 
-library(plyr)
+groundhog.library(plyr, groundhog_day)
 
 d$incomeNew <- 
   revalue(d$income, 

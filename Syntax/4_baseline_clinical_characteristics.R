@@ -7,7 +7,10 @@
 # Load packages ----
 # ---------------------------------------------------------------------------- #
 
-library(psych)
+library(groundhog)
+groundhog_day <- "2019-11-02"
+
+groundhog.library(psych, groundhog_day)
 
 # ---------------------------------------------------------------------------- #
 # Set working directory ----

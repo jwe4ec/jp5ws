@@ -7,8 +7,11 @@
 # Load packages and set seed ----
 # ---------------------------------------------------------------------------- #
 
-library(mitml)
-library(nlme)
+library(groundhog)
+groundhog_day <- "2019-11-02"
+
+groundhog.library(mitml, groundhog_day)
+groundhog.library(nlme, groundhog_day)
 
 set.seed(1234)
 

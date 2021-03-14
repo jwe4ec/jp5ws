@@ -127,17 +127,17 @@ randomizeTbl <- read.csv("./Data/Raw/report_Aug_19_2018.csv")
 
 # Rename columns.
 
-colnames(randomizeTbl)[colnames(randomizeTbl) == 
-                         "?..id"] <- "id"
-colnames(randomizeTbl)[colnames(randomizeTbl) == 
-                         "?..id"] <- "id"
+if ("?..id" %in% colnames(randomizeTbl)) {
+  colnames(randomizeTbl)[colnames(randomizeTbl) == "?..id"] <- "id"
+} else if ("ï..id" %in% colnames(randomizeTbl)) {
+  colnames(randomizeTbl)[colnames(randomizeTbl) == "ï..id"] <- "id"
+}
 
 colnames(randomizeTbl)[colnames(randomizeTbl) == 
                          "cast.p.admin.as.UNSIGNED."] <- "admin"
 
 colnames(randomizeTbl)[colnames(randomizeTbl) == 
-                         "CAST.p.test_account.as.UNSIGNED."] <- 
-  "test_account"
+                         "CAST.p.test_account.as.UNSIGNED."] <- "test_account"
 
 colnames(randomizeTbl)[colnames(randomizeTbl) == 
                          "conditioning"] <- "condition"

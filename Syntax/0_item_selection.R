@@ -13,9 +13,12 @@
 # Load packages ----
 # ---------------------------------------------------------------------------- #
 
-library(psych)
-library(mirt)
-library(mokken)
+library(groundhog)
+groundhog_day <- "2019-11-02"
+
+groundhog.library(psych, groundhog_day)
+groundhog.library(mirt, groundhog_day)
+groundhog.library(mokken, groundhog_day)
 
 # ---------------------------------------------------------------------------- #
 # Set working directory ----

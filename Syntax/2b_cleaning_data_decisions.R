@@ -37,8 +37,9 @@ length(taskLogTbl2multipleIDs)
 # View(demographicTbl2[which(demographicTbl2$participantRSA == 734), ])
 # View(phq4Tbl2[which(phq4Tbl2$participantRSA == 879), ])
 # View(whatIBelieveTbl2[which(whatIBelieveTbl2$participantRSA == 879), ])
+# View(mentalHealthHxTbl2[which(mentalHealthHxTbl2$participantRSA == 734), ])
 
-# The 71 subjects with multiple entries in the tables below are also reflected 
+# The 76 subjects with multiple entries in the tables below are also reflected 
 # as having multiple entries in taskLogTbl2.
 
 length(unique(randomizeTbl2multipleIDs))
@@ -47,6 +48,7 @@ length(unique(phq4Tbl2multipleIDs))
 length(unique(expectancyBiasTbl2multipleIDs))
 length(unique(whatIBelieveTbl2multipleIDs))
 length(unique(as.integer(as.character(demographicTbl2multipleIDs))))
+length(unique(mentalHealthHxTbl2multipleIDs))
 
 setdiff(randomizeTbl2multipleIDs, taskLogTbl2multipleIDs)
 setdiff(credibilityTbl2multipleIDs, taskLogTbl2multipleIDs)
@@ -55,13 +57,15 @@ setdiff(expectancyBiasTbl2multipleIDs, taskLogTbl2multipleIDs)
 setdiff(whatIBelieveTbl2multipleIDs, taskLogTbl2multipleIDs)
 setdiff(as.integer(as.character(demographicTbl2multipleIDs)), 
         taskLogTbl2multipleIDs)
+setdiff(mentalHealthHxTbl2multipleIDs, taskLogTbl2multipleIDs)
 
 length(unique(c(randomizeTbl2multipleIDs,
                 credibilityTbl2multipleIDs,
                 phq4Tbl2multipleIDs, 
                 expectancyBiasTbl2multipleIDs, 
                 whatIBelieveTbl2multipleIDs,
-                as.integer(as.character(demographicTbl2multipleIDs)))))
+                as.integer(as.character(demographicTbl2multipleIDs)),
+                mentalHealthHxTbl2multipleIDs)))
 
 # ---------------------------------------------------------------------------- #
 # DECISION 1 ----
@@ -111,7 +115,8 @@ length(unique(c(randomizeTbl2multipleIDs,
 # DECISION 4 ----
 # ---------------------------------------------------------------------------- #
 
-# ANALYZE THE FIRST CREDIBILITY AND DEMOGRAPHICS SUBMISSIONS.
+# ANALYZE THE FIRST CREDIBILITY, DEMOGRAPHICS, AND MENTAL HEALTH HISTORY
+# SUBMISSIONS.
 
 # 239:
 #   Did Demographics at Pretest twice, a few min apart. Responses identical 
@@ -138,8 +143,8 @@ length(unique(c(randomizeTbl2multipleIDs,
 # DECISION 5 ----
 # ---------------------------------------------------------------------------- #
 
-# ANALYZE THE FIRST CREDIBILITY AND DEMOGRAPHICS SUBMISSIONS AND THE FIRST 
-# SESSION 3 SUBMISSION.
+# ANALYZE THE FIRST CREDIBILITY, DEMOGRAPHICS, AND MENTAL HEALTH HISTORY
+# SUBMISSIONS AND THE FIRST SESSION 3 SUBMISSION.
 
 # 734:
 #   Did Credibility, Demographics, and MentalHealthHistory at Pretest and 

@@ -2294,7 +2294,101 @@ mentalHealthHxTbl2multipleIDs <- unique(summarySubset$participantRSA)
 # Resolve multiple entries in mentalhealthhistory table ----
 #------------------------------------------------------------------------------#
 
-# TODO
+# Implement decisions documented in separate cleaning script.
+
+# Implement DECISION 1.
+
+# View(mentalHealthHxTbl2[mentalHealthHxTbl2$participantRSA %in%
+#                           c(200, 392, 412, 495, 496, 577, 582, 627,
+#                             634, 961, 453, 788, 138, 942), ])
+
+mentalHealthHxTbl3 <- 
+  mentalHealthHxTbl2[!(mentalHealthHxTbl2$participantRSA %in% 
+                         c(200, 392, 412, 495, 496, 577, 582, 627, 
+                           634, 961, 453, 788, 138, 942)), ]
+
+# Implement DECISION 4.
+
+# View(mentalHealthHxTbl2[(mentalHealthHxTbl2$participantRSA %in%
+#                          c(862)),
+#                      c(1, 48)])
+
+## Remove rows for ids (note: not participant IDs) identified manually.
+
+mentalHealthHxTbl3 <- 
+  mentalHealthHxTbl3[!(mentalHealthHxTbl3$id %in% 
+                      c(1002)), ]
+
+# Implement DECISION 5.
+
+# View(mentalHealthHxTbl2[(mentalHealthHxTbl2$participantRSA %in% c(734)), ])
+
+## Remove rows for ids (note: not participant IDs) identified manually.
+
+mentalHealthHxTbl3 <- 
+  mentalHealthHxTbl3[!(mentalHealthHxTbl3$id %in% c(654)), ]
+
+# Implement DECISION 7.
+
+# View(mentalHealthHxTbl2[(mentalHealthHxTbl2$participantRSA %in%
+#                            c(883, 584, 91, 1112, 1130, 261, 223, 814, 1031)), 
+#                         c(1, 48)])
+
+## Remove rows for ids (note: not participant IDs) identified manually.
+
+mentalHealthHxTbl3 <- 
+  mentalHealthHxTbl3[!(mentalHealthHxTbl3$id %in% 
+                      c(74, 858, 232, 515, 872, 792, c(939, 941), 1043, 1062)), ]
+
+# Implement DECISION 8.
+
+# View(mentalHealthHxTbl2[(mentalHealthHxTbl2$participantRSA %in%
+#                            c(130, 137, 760, 950, 711, 533, 947, 895)),
+#                          c(1, 48)])
+
+## Remove rows for ids (note: not participant IDs) identified manually.
+
+mentalHealthHxTbl3 <- 
+  mentalHealthHxTbl3[!(mentalHealthHxTbl3$id %in% 
+                         c(112, 121, 758, 631, 683, 801, 1031, 857)), ]
+
+# Implement DECISION 9.
+
+# View(mentalHealthHxTbl2[(mentalHealthHxTbl2$participantRSA %in%
+#                            c(916)),
+#                          c(1, 48)])
+
+## Remove rows for ids (note: not participant IDs) identified manually.
+
+mentalHealthHxTbl3 <- 
+  mentalHealthHxTbl3[!(mentalHealthHxTbl3$id %in% 
+                      c(1008)), ]
+
+# Implement DECISION 10.
+
+# View(mentalHealthHxTbl2[(mentalHealthHxTbl2$participantRSA %in%
+#                            c(943, 565, 1066, 49, 1160)),
+#                          c(1, 48)])
+
+## Remove rows for ids (note: not participant IDs) identified manually.
+
+mentalHealthHxTbl3 <- 
+  mentalHealthHxTbl3[!(mentalHealthHxTbl3$id %in% 
+                         c(1030, 1096, 876, 1056, 1098)), ]
+
+# Confirm that there are no longer multiple entries.
+
+summary <- unique(mentalHealthHxTbl3) %>% group_by(participantRSA) %>% 
+  summarise(count=n())
+summarySubset <- subset(summary, summary$count > 1)
+unique(summarySubset$participantRSA)
+
+length(unique(summarySubset$participantRSA))
+
+# TODO: Additional data cleaning for ITT subjects is conducted in the separate 
+# script "1d_further_cleaning_mentalHealthHx.R." Mental health history data have 
+# not been cleaned for all randomized subjects.
+
 
 
 

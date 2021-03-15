@@ -895,7 +895,7 @@ length(setdiff(IDsStartedS4, IDsStartedFU))
 setdiff(IDsStartedFU, taskLogTbl2completerIDs)
 # length(setdiff(taskLogTbl2completerIDs, IDsStartedFU))
 
-# We do not presently investiage multiple taskLog entries for follow-up.
+# We do not presently investigate multiple taskLog entries for follow-up.
 
 #------------------------------------------------------------------------------#
 # Import credibility table ----
@@ -2206,6 +2206,103 @@ length(unique(summarySubset$participantRSA))
 # Additional data cleaning for ITT subjects is conducted in the separate script
 # "1c_further_cleaning_demographics.R." Demographic data have not been cleaned 
 # for all randomized subjects.
+
+#------------------------------------------------------------------------------#
+# Import mentalhealthhistory table ----
+#------------------------------------------------------------------------------#
+
+# Import data from MentalHealthHistory_recovered_Sep_10_2018.csv.
+
+mentalHealthHxTbl <- 
+  read.csv("./Data/Raw/MentalHealthHistory_recovered_Sep_10_2018.csv", 
+           header = TRUE)
+
+# Remove 29 test accounts.
+
+# length(unique(mentalHealthHxTbl$participantRSA))
+
+mentalHealthHxTbl2 <- subset(mentalHealthHxTbl, 
+                             !(mentalHealthHxTbl$participantRSA %in% 
+                                 participantTblTestAccts$study_id))
+
+# sort(unique(subset(mentalHealthHxTbl,
+#                    (mentalHealthHxTbl$participantRSA %in%
+#                       participantTblTestAccts$study_id))$participantRSA))
+# length(unique(subset(mentalHealthHxTbl,
+#                      (mentalHealthHxTbl$participantRSA %in%
+#                         participantTblTestAccts$study_id))$participantRSA))
+
+# length(unique(mentalHealthHxTbl2$participantRSA))
+
+# Remove subjects who enrolled after 3/27/2018, leaving 1142 subjects.
+
+mentalHealthHxTbl2 <- mentalHealthHxTbl2[mentalHealthHxTbl2$participantRSA %in% 
+                                          IDsEnrolled, ]
+
+# Rearrange variable columns.
+
+mentalHealthHxTbl2 <- 
+  mentalHealthHxTbl2[ , c("participantRSA", "session", "app", "app_past", 
+                          "book", "book_past", "changeHelp", "coach", 
+                          "coach_past", "disorders", "family", "family_past", 
+                          "friend", "friend_past", "general_practitioner", 
+                          "general_practitioner_past", "help", "lmhc", 
+                          "lmhc_past", "medicine", "medicine_past", 
+                          "noHelp_Reason", "online", "online_past", "other", 
+                          "other_Desc", "other_DescNo", "other_HelpChange", 
+                          "other_HelpCurrent", "other_HelpPast", 
+                          "other_NoHelpReason", "other_past", "pastDisorders", 
+                          "pastHelp", "psychiatrist", "psychiatrist_past", 
+                          "psychologist", "psychologist_past", 
+                          "religious_leader", "religious_leader_past", 
+                          "school_counselor", "school_counselor_past", 
+                          "support_group", "support_group_past", "teacher", 
+                          "teacher_past", "date", "id", "timeOnPage", "tag")]
+
+# All observations are at preTest
+
+table(mentalHealthHxTbl2$session)
+
+# Sort by participantRSA and id.
+
+mentalHealthHxTbl2 <- mentalHealthHxTbl2[order(mentalHealthHxTbl2$participantRSA, 
+                                                 mentalHealthHxTbl2$id), ]
+
+# Rename rows.
+
+rownames(mentalHealthHxTbl2) <- 1:nrow(mentalHealthHxTbl2)
+
+# Check number of entries per session.
+
+# View(mentalHealthHxTbl2 %>%
+#        group_by(participantRSA) %>% summarise(count=n()))
+# View(unique(mentalHealthHxTbl2) %>%
+#        group_by(participantRSA) %>% summarise(count=n()))
+
+# There are 27 subjects with multiple entries.
+
+summary <- unique(mentalHealthHxTbl2) %>% group_by(participantRSA) %>% 
+  summarise(count=n())
+summarySubset <- subset(summary, summary$count > 1)
+unique(summarySubset$participantRSA)
+
+length(unique(summarySubset$participantRSA))
+
+mentalHealthHxTbl2multipleIDs <- unique(summarySubset$participantRSA)
+
+#------------------------------------------------------------------------------#
+# Resolve multiple entries in mentalhealthhistory table ----
+#------------------------------------------------------------------------------#
+
+# TODO
+
+
+
+
+
+
+
+
 
 #------------------------------------------------------------------------------#
 # Build data file ----

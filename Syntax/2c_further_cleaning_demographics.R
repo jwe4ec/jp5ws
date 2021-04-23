@@ -20,13 +20,17 @@
 # Import data ----
 # ---------------------------------------------------------------------------- #
 
-# Import partially cleaned demographic data, remove first column "X", and
-# restrict to preTest.
+# Import partially cleaned demographic data, remove first column "X", convert
+# character columns to factors, and restrict to preTest.
 
 Demographic <- read.csv("./Data/Temp/FTmainDataDemog.csv")
 
-# colnames(Demographic)
-Demographic <- Demographic[, 2:14]
+Demographic$X <- NULL
+
+# str(Demographic)
+Demographic[sapply(Demographic, is.character)] <- 
+  lapply(Demographic[sapply(Demographic, is.character)], as.factor)
+# str(Demographic)
 
 Demographic.pretest <- Demographic[Demographic$session == 'preTest', ]
 
@@ -43,17 +47,18 @@ Demographic.pretest.itt <-
 
 # View(Demographic.pretest.itt)
 
-# Verify number of ITT subjects in each condition and order condition levels
-# based on demographic table in manuscript.
+# Order condition levels based on demographic table in manuscript and verify 
+# number of ITT subjects in each condition.
+
+# levels(Demographic.pretest.itt$condition)
+Demographic.pretest.itt$condition <- 
+  factor(Demographic.pretest.itt$condition, 
+         levels(Demographic.pretest.itt$condition)[c(5, 4, 1, 2, 3)])
+# levels(Demographic.pretest.itt$condition)
 
 # table(Demographic.pretest.itt$condition)
 
-group.size <- summary(as.factor(Demographic.pretest.itt$condition))
-
-# levels(Demographic.pretest.itt$condition)
-Demographic.pretest.itt$condition <- factor(Demographic.pretest.itt$condition, 
-         levels(Demographic.pretest.itt$condition)[c(5, 4, 1, 2, 3)])
-# levels(Demographic.pretest.itt$condition)
+group.size <- summary(Demographic.pretest.itt$condition)
 
 # ---------------------------------------------------------------------------- #
 # Further clean demographic data and compute descriptives ----
@@ -287,17 +292,8 @@ length(unique(Demographic.pretest.itt$country[Demographic.pretest.itt$country !=
 
 ## Find the top 5 countries.
 
-nationality <- rbind(as.character(levels(Demographic.pretest.itt$country)),
-                   table(Demographic.pretest.itt$country))
-nationality <- as.data.frame(t(nationality))
-colnames(nationality) <- c('country', 'number')
-nationality$number <- as.numeric(levels(nationality$number))[nationality$number]
-rownames(nationality) <- NULL
-nationality <- nationality[order(nationality$number, decreasing = TRUE), ]
-nationality
-
-### United States (799), United Kingdom (32), Canada (20), Australia (18), 
-### Russia (8)
+sort(table(Demographic.pretest.itt$country), decreasing = TRUE)
+sort(table(Demographic.pretest.itt$country), decreasing = TRUE)[1:5]
 
 ## Group levels not in the top 5 into an Other category and reorder.
 

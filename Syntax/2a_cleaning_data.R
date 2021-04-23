@@ -2381,18 +2381,34 @@ unique(summarySubset$participantRSA)
 
 length(unique(summarySubset$participantRSA))
 
-# TODO: Additional data cleaning for ITT subjects is conducted in the separate 
-# script "1d_further_cleaning_mentalHealthHx.R." Mental health history data have 
+#------------------------------------------------------------------------------#
+# Export partially cleaned mentalhealthhistory table ----
+#------------------------------------------------------------------------------#
+
+# Rename participant ID column and remove tag column.
+
+names(mentalHealthHxTbl3)[names(mentalHealthHxTbl3) == "participantRSA"] <-
+  "participantId"
+mentalHealthHxTbl3$tag <- NULL
+
+# Add condition
+
+tempRandomize <- randomizeTbl2
+tempRandomize$participantId <- tempRandomize$id
+tempRandomize$id <- NULL
+tempRandomize <- tempRandomize[ , c(2, 1)]
+
+mentalHealthHxTbl3 <- merge(mentalHealthHxTbl3, tempRandomize, 
+                            by = "participantId",
+                            all.x = TRUE)
+
+# Save table
+
+write.csv(mentalHealthHxTbl3, file = "./Data/Temp/mentalHealthHxTbl3.csv")
+
+# Additional data cleaning for ITT subjects is conducted in separate script 
+# "1d_further_cleaning_mentalHealthHx.R." Mental health history data have 
 # not been cleaned for all randomized subjects.
-
-
-
-
-
-
-
-
-
 
 #------------------------------------------------------------------------------#
 # Build data file ----
@@ -2990,6 +3006,7 @@ FTmainAnalysisSamples <- read.csv("./Data/Clean/FTmainAnalysisSamples.csv")
 # These data require additional cleaning.
 
 FTmainDataDemog <- read.csv("./Data/Temp/FTmainDataDemog.csv")
+mentalHealthHxTbl3 <- read.csv("./Data/Temp/mentalHealthHxTbl3.csv")
 
 # Remove the X column, which are just the row names at time of export to 
 # CSV and are redundant.
@@ -2998,8 +3015,10 @@ FTmainDataItemsScales$X <- NULL
 FTmainDataScales$X <- NULL
 FTmainDataDemog$X <- NULL
 FTmainAnalysisSamples$X <- NULL
+mentalHealthHxTbl3$X <- NULL
 
-# Reorder the levels of session and make it an ordered factor.
+# Reorder the levels of session and make it an ordered factor, except for
+# mentalHealthHxTbl3, which only has rows at "preTest"
 
 FTmainDataItemsScales$session <- 
   ordered(FTmainDataItemsScales$session, 
@@ -3018,7 +3037,10 @@ FTmainDataDemog$session <-
             levels = c("Eligibility", "preTest", "firstSession", "secondSession", 
                        "thirdSession", "fourthSession", "PostFollowUp"))
 
+table(mentalHealthHxTbl3$session)
+
 # View(FTmainDataItemsScales)
 # View(FTmainDataScales)
 # View(FTmainDataDemog)
 # View(FTmainAnalysisSamples)
+# View(mentalHealthHxTbl3)

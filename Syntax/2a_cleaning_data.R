@@ -454,7 +454,7 @@ table(taskLogTbl2Brief$condition)
 41 - 11   # FIFTY_FIFTY_RANDOM
 82 - 22   # NEUTRAL
 
-## We do not presently investiage multiple taskLog entries for pretreatment.
+## We do not presently investigate multiple taskLog entries for pretreatment.
 
 # Session 1
 

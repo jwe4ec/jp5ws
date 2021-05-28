@@ -4,8 +4,22 @@
 # ---------------------------------------------------------------------------- #
 
 # ---------------------------------------------------------------------------- #
-# Load packages ----
+# Check R version and load packages ----
 # ---------------------------------------------------------------------------- #
+
+# TODO: Determine R version for script
+
+
+
+
+
+script_R_version <- ""
+current_R_version <- R.Version()$version.string
+
+if(current_R_version != script_R_version) {
+  warning(paste0("This script is based on ", script_R_version,
+                 ". You are running ", current_R_version, "."))
+}
 
 library(groundhog)
 groundhog_day <- "2019-11-02"

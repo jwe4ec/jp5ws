@@ -4,11 +4,19 @@
 # ---------------------------------------------------------------------------- #
 
 # ---------------------------------------------------------------------------- #
-# Load packages and set seed ----
+# Check R version, load packages, and set seed ----
 # ---------------------------------------------------------------------------- #
 
+script_R_version <- "R version 4.1.0 (2021-05-18)"
+current_R_version <- R.Version()$version.string
+
+if(current_R_version != script_R_version) {
+  warning(paste0("This script is based on ", script_R_version,
+                 ". You are running ", current_R_version, "."))
+}
+
 library(groundhog)
-groundhog_day <- "2020-07-12"
+groundhog_day <- "2021-05-20"
 
 groundhog.library(jomo, groundhog_day)
 groundhog.library(mitml, groundhog_day)
@@ -45,6 +53,7 @@ final$educationGrpNew2 <- as.numeric(final$educationGrpNew2)
 
 fml <- list(posExpBiasScale + negExpBiasScale + depressionScale + anxietyScale + selfEffScale + growthMindScale + optimismScale ~ condition + session_int + condition*session_int + (1 + session_int | participantId),
             age + educationGrpNew2 ~ 1)
+
 imp <- jomoImpute(final, formula = fml, n.burn = 10000, n.iter = 250, m = 100, seed = 1234)
 impList <- mitmlComplete(imp, print = "all")
 

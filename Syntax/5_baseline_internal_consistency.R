@@ -4,8 +4,22 @@
 #------------------------------------------------------------------------------#
 
 # ---------------------------------------------------------------------------- #
-# Load packages and set seed ----
+# Check R version, load packages, and set seed ----
 # ---------------------------------------------------------------------------- #
+
+# TODO: Determine R version for script
+
+
+
+
+
+script_R_version <- ""
+current_R_version <- R.Version()$version.string
+
+if(current_R_version != script_R_version) {
+  warning(paste0("This script is based on ", script_R_version,
+                 ". You are running ", current_R_version, "."))
+}
 
 library(groundhog)
 groundhog_day <- "2020-06-03"

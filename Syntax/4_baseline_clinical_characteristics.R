@@ -7,13 +7,7 @@
 # Check R version and load packages ----
 # ---------------------------------------------------------------------------- #
 
-# TODO: Determine R version for script
-
-
-
-
-
-script_R_version <- ""
+script_R_version <- "R version 4.1.0 (2021-05-18)"
 current_R_version <- R.Version()$version.string
 
 if(current_R_version != script_R_version) {
@@ -22,7 +16,7 @@ if(current_R_version != script_R_version) {
 }
 
 library(groundhog)
-groundhog_day <- "2019-11-02"
+groundhog_day <- "2021-05-20"
 
 groundhog.library(psych, groundhog_day)
 

@@ -7,13 +7,7 @@
 # Check R version, load packages, and set seed ----
 # ---------------------------------------------------------------------------- #
 
-# TODO: Determine R version for script
-
-
-
-
-
-script_R_version <- ""
+script_R_version <- "R version 4.1.0 (2021-05-18)"
 current_R_version <- R.Version()$version.string
 
 if(current_R_version != script_R_version) {
@@ -22,7 +16,7 @@ if(current_R_version != script_R_version) {
 }
 
 library(groundhog)
-groundhog_day <- "2019-11-02"
+groundhog_day <- "2021-05-20"
 
 groundhog.library(mitml, groundhog_day)
 groundhog.library(nlme, groundhog_day)
@@ -372,7 +366,7 @@ writeresults <- function(data, path, phase, c.levels, sample, compare) {
                                method = "REML"))
       cat("\n")
       print(modelList[[1]]$call)
-      pooled <- testEstimates(modelList, var.comp = TRUE, df.com = df)
+      pooled <- testEstimates(modelList, extra.pars = TRUE, df.com = df)
       print(pooled)
       ci <- confint(pooled, level = 1 - alpha)
       print(ci)
@@ -383,7 +377,7 @@ writeresults <- function(data, path, phase, c.levels, sample, compare) {
                                method = "REML"))
       cat("\n")
       print(modelList[[1]]$call)
-      pooled <- testEstimates(modelList, var.comp = TRUE, df.com = df)
+      pooled <- testEstimates(modelList, extra.pars = TRUE, df.com = df)
       print(pooled)
       ci <- confint(pooled, level = 1 - alpha)
       print(ci)
@@ -521,7 +515,7 @@ writeresults <- function(data, path, phase, c.levels, sample, compare) {
 
 # ITT
 
-## Treament phase
+## Treatment phase
 
 writeresults(impList, 
              './Results/Longitudinal Outcome/Treatment Phase/ITT/4conditions_vs_POSITIVE.txt',

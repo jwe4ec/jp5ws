@@ -7,13 +7,7 @@
 # Check R version and load packages ----
 # ---------------------------------------------------------------------------- #
 
-# TODO: Determine R version for script
-
-
-
-
-
-script_R_version <- ""
+script_R_version <- "R version 4.1.0 (2021-05-18)"
 current_R_version <- R.Version()$version.string
 
 if(current_R_version != script_R_version) {

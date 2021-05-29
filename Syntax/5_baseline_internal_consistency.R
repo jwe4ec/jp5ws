@@ -7,13 +7,7 @@
 # Check R version, load packages, and set seed ----
 # ---------------------------------------------------------------------------- #
 
-# TODO: Determine R version for script
-
-
-
-
-
-script_R_version <- ""
+script_R_version <- "R version 4.0.2 (2020-06-22)"
 current_R_version <- R.Version()$version.string
 
 if(current_R_version != script_R_version) {

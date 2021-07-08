@@ -31,7 +31,7 @@ length(taskLogTbl2multipleIDs)
 
 # Use this to search relevant tables for participants.
 
-# View(taskLogTbl2[which(taskLogTbl2$participantId == 868), ])
+# View(taskLogTbl2[which(taskLogTbl2$participantId == 137), ])
 # View(credibilityTbl2[which(credibilityTbl2$participantRSA == 868), ])
 # View(expectancyBiasTbl2[which(expectancyBiasTbl2$participant == 879), ])
 # View(demographicTbl2[which(demographicTbl2$participantRSA == 734), ])
@@ -337,3 +337,13 @@ length(unique(c(randomizeTbl2multipleIDs,
 # 662:
 #   Did FU twice, 23 days apart. Responses on some tables above different 
 #   and not incomplete.
+
+# ---------------------------------------------------------------------------- #
+# DECISION 15 ----
+# ---------------------------------------------------------------------------- #
+
+# ANALYZE THE LAST REASONS FOR ENDING SUBMISSION FOR THIS PARTICIPANT.
+
+# 137:
+#   Did Reasons for Ending four times, a few min apart. First and last responses
+#   are the same, but last response has additional free-text information.

@@ -2419,6 +2419,243 @@ write.csv(mentalHealthHxTbl3, file = "./Data/Temp/mentalHealthHxTbl3.csv")
 # not been cleaned for all randomized subjects.
 
 #------------------------------------------------------------------------------#
+# Import evaluation table ----
+#------------------------------------------------------------------------------#
+
+# Import data from Evaluation_recovered_Sep_10_2018.csv
+
+evalTbl <- 
+  read.csv("./Data/Raw/Evaluation_recovered_Sep_10_2018.csv", 
+           header = TRUE)
+
+# Remove 1 test account.
+
+# length(unique(evalTbl$participantRSA))
+
+evalTbl2 <- subset(evalTbl, 
+                   !(evalTbl$participantRSA %in% 
+                       participantTblTestAccts$study_id))
+
+# sort(unique(subset(evalTbl,
+#                    (evalTbl$participantRSA %in%
+#                       participantTblTestAccts$study_id))$participantRSA))
+# length(unique(subset(evalTbl,
+#                      (evalTbl$participantRSA %in%
+#                         participantTblTestAccts$study_id))$participantRSA))
+
+# length(unique(evalTbl2$participantRSA))
+
+# Remove subjects who enrolled after 3/27/2018, leaving 32 subjects.
+
+evalTbl2 <- evalTbl2[evalTbl2$participantRSA %in% IDsEnrolled, ]
+
+# Rearrange variable columns.
+
+evalTbl2 <- 
+  evalTbl2[ , c("participantRSA", "session", "commute", "condition", 
+                "distracted", "easy", "helpful", "home", 
+                "idealSessions", "interest", "likeGral", "likedLooks", 
+                "noAns_Distracted", "noAns_Easy", "noAns_Helpful", 
+                "noAns_Interest", "noAns_Like", "noAns_Looks", 
+                "noAns_Mood", "noAns_OtherTreatment", "noAns_Privacy", 
+                "noAns_Problems", "noAns_Quality", "noAns_Recommend", 
+                "noAns_Similar", "noAns_Tiring", "noAns_TrustInfo", 
+                "noAns_UnderstandAssessment", 
+                "noAns_UnderstandTraining", "noAns_where", 
+                "otherComplete", "otherTreatment", "other_Place", 
+                "overallMood", "privacy", "problems", "public", 
+                "quality", "recommend", "similar", "tiring", 
+                "trustInfo", "understandAssessment", 
+                "understandTraining", "vacation", "whyIdeal", "work", 
+                "date", "id", "timeOnPage", "tag")]
+
+# Some observations are at fourthSession and others are at PostFollowUp
+
+table(evalTbl2$session)
+
+# Sort by participantRSA and id.
+
+evalTbl2 <- evalTbl2[order(evalTbl2$participantRSA, 
+                           evalTbl2$id), ]
+
+# Rename rows.
+
+rownames(evalTbl2) <- 1:nrow(evalTbl2)
+
+# Check number of entries per session.
+
+# View(evalTbl2 %>%
+#        group_by(participantRSA) %>% summarise(count=n()))
+# View(unique(evalTbl2) %>%
+#        group_by(participantRSA) %>% summarise(count=n()))
+
+# There are 0 subjects with multiple entries.
+
+summary <- unique(evalTbl2) %>% group_by(participantRSA) %>% 
+  summarise(count=n())
+summarySubset <- subset(summary, summary$count > 1)
+unique(summarySubset$participantRSA)
+
+length(unique(summarySubset$participantRSA))
+
+#------------------------------------------------------------------------------#
+# Export partially cleaned evaluation table ----
+#------------------------------------------------------------------------------#
+
+# Rename participant ID column and remove tag column
+
+names(evalTbl2)[names(evalTbl2) == "participantRSA"] <-
+  "participantId"
+evalTbl2$tag <- NULL
+
+# Rename condition to perceived_cond (to distinguish from study condition)
+
+names(evalTbl2)[names(evalTbl2) == "condition"] <-
+  "perceived_cond"
+
+# Add study condition
+
+tempRandomize <- randomizeTbl2
+tempRandomize$participantId <- tempRandomize$id
+tempRandomize$id <- NULL
+tempRandomize <- tempRandomize[ , c(2, 1)]
+
+evalTbl3 <- merge(evalTbl2, tempRandomize, 
+                            by = "participantId",
+                            all.x = TRUE)
+
+# Save table
+
+write.csv(evalTbl3, file = "./Data/Temp/evalTbl3.csv", row.names = FALSE)
+
+# TODO: Additional data cleaning is conducted in separate script, if needed
+
+
+
+
+
+#------------------------------------------------------------------------------#
+# Import reasons for ending table ----
+#------------------------------------------------------------------------------#
+
+# Import data from ReasonsForEnding_recovered_Sep_10_2018.csv
+
+reasonEndTbl <- 
+  read.csv("./Data/Raw/ReasonsForEnding_recovered_Sep_10_2018.csv", 
+           header = TRUE)
+
+# Remove 7 test accounts.
+
+# length(unique(reasonEndTbl$participantRSA))
+
+reasonEndTbl2 <- subset(reasonEndTbl, 
+                   !(reasonEndTbl$participantRSA %in% 
+                       participantTblTestAccts$study_id))
+
+# sort(unique(subset(reasonEndTbl,
+#                    (reasonEndTbl$participantRSA %in%
+#                       participantTblTestAccts$study_id))$participantRSA))
+# length(unique(subset(reasonEndTbl,
+#                      (reasonEndTbl$participantRSA %in%
+#                         participantTblTestAccts$study_id))$participantRSA))
+
+# length(unique(reasonEndTbl2$participantRSA))
+
+# Remove subjects who enrolled after 3/27/2018, leaving 21 subjects.
+
+reasonEndTbl2 <- reasonEndTbl2[reasonEndTbl2$participantRSA %in% IDsEnrolled, ]
+
+# Rearrange variable columns.
+
+reasonEndTbl2 <- 
+  reasonEndTbl2[ , c("participantRSA", "session", "changeMed", "connected", 
+                     "easy", "focused", "forgot", "hardToRead", 
+                     "hardToUnderstand", "helpful", "inGeneral", "interest",
+                     "internet", "location", "looked", "navigationHard", 
+                     "notUseful", "otherWhyInControl", "personalIssues",
+                     "pointInControl", "privacy", "reasons", "takeTooLong",
+                     "thoughtInControl", "tooManyWords", "trust",
+                     "understandAssessments", "understandTraining", 
+                     "whyInControl", "work", "date", "id", "timeOnPage", "tag")]
+
+# Some observations are at each session (1-4)
+
+table(reasonEndTbl2$session)
+
+# Sort by participantRSA and id.
+
+reasonEndTbl2 <- reasonEndTbl2[order(reasonEndTbl2$participantRSA, 
+                                     reasonEndTbl2$id), ]
+
+# Rename rows.
+
+rownames(reasonEndTbl2) <- 1:nrow(reasonEndTbl2)
+
+# Check number of entries per session.
+
+# View(reasonEndTbl2 %>%
+#        group_by(participantRSA) %>% summarise(count=n()))
+# View(unique(reasonEndTbl2) %>%
+#        group_by(participantRSA) %>% summarise(count=n()))
+
+# There are 1 subjects with multiple entries.
+
+summary <- unique(reasonEndTbl2) %>% group_by(participantRSA) %>% 
+  summarise(count=n())
+summarySubset <- subset(summary, summary$count > 1)
+unique(summarySubset$participantRSA)
+
+length(unique(summarySubset$participantRSA))
+
+# Implement DECISION 15.
+
+# View(reasonEndTbl2[reasonEndTbl2$participantRSA == 137, ])
+
+## Remove rows for ids (note: not participant IDs) identified manually.
+
+reasonEndTbl3 <- reasonEndTbl2[!(reasonEndTbl2$id %in% c(6:8)), ]
+
+# Confirm that there are no longer multiple entries.
+
+summary <- unique(reasonEndTbl3) %>% group_by(participantRSA) %>% 
+  summarise(count=n())
+summarySubset <- subset(summary, summary$count > 1)
+unique(summarySubset$participantRSA)
+
+length(unique(summarySubset$participantRSA))
+
+#------------------------------------------------------------------------------#
+# Export partially cleaned reasons for ending table ----
+#------------------------------------------------------------------------------#
+
+# Rename participant ID column and remove tag column
+
+names(reasonEndTbl3)[names(reasonEndTbl3) == "participantRSA"] <-
+  "participantId"
+
+# Add condition
+
+tempRandomize <- randomizeTbl2
+tempRandomize$participantId <- tempRandomize$id
+tempRandomize$id <- NULL
+tempRandomize <- tempRandomize[ , c(2, 1)]
+
+reasonEndTbl3 <- merge(reasonEndTbl3, tempRandomize, 
+                       by = "participantId",
+                       all.x = TRUE)
+
+# Save table
+
+write.csv(reasonEndTbl3, file = "./Data/Temp/reasonEndTbl3.csv",
+          row.names = FALSE)
+
+# TODO: Additional data cleaning is conducted in separate script, if needed
+
+
+
+
+
+#------------------------------------------------------------------------------#
 # Build data file ----
 #------------------------------------------------------------------------------#
 

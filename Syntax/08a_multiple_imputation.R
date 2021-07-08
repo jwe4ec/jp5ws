@@ -53,7 +53,6 @@ final$educationGrpNew2 <- as.numeric(final$educationGrpNew2)
 
 fml <- list(posExpBiasScale + negExpBiasScale + depressionScale + anxietyScale + selfEffScale + growthMindScale + optimismScale ~ condition + session_int + condition*session_int + (1 + session_int | participantId),
             age + educationGrpNew2 ~ 1)
-
 imp <- jomoImpute(final, formula = fml, n.burn = 10000, n.iter = 250, m = 100, seed = 1234)
 impList <- mitmlComplete(imp, print = "all")
 
@@ -70,7 +69,7 @@ sink("./Results/Imputation/impList/mitmlSummary/summary.txt")
 summary(imp)
 sink()
 
-setwd("./Results/Imputation/impList/mitmlPlots")
+setwd("./Results/Imputation/impList")
 plot(imp, trace = "all", export = "pdf")
 
 ### Save list of imputed datasets.
@@ -108,7 +107,7 @@ impList2 <- mitmlComplete(imp2, print = "all")
 ### Potential scale reduction factor is close to 1 (i.e., < 1.050) for all 
 ### parameters. Trace plots show no sign of drifting or substantial change
 ### after burn-in phase, indicating 10,000 iterations were sufficient for
-### paramters to reach respective target distributions. Autocorrelation
+### parameters to reach respective target distributions. Autocorrelation
 ### dies out by lag 250, indicating imputations spread 250 iterations
 ### apart can be considered independent. Thus, parameters have converged
 ### and the imputed datasets constitute independent draws from posterior
@@ -118,7 +117,7 @@ sink("./Results/Imputation/impList2/mitmlSummary/summary.txt")
 summary(imp2)
 sink()
 
-setwd("./Results/Imputation/impList2/mitmlPlots")
+  setwd("./Results/Imputation/impList2/mitmlPlots")
 plot(imp2, trace = "all", export = "pdf")
 
 ### Save list of imputed datasets.

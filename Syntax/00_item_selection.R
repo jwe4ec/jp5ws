@@ -5,17 +5,26 @@
 # Revision History:
 #
 # Dec 5 2016 1:37:54 AM:   TempletonData.R was created.
-# Oct 28 2019 7:16:30 AM:  Jeremy W. Eberle renamed file to "0_item_selection.R"
-#                          and reformatted the code.
+# Oct 28 2019 7:16:30 AM:  Jeremy W. Eberle reformatted the code.
 # ---------------------------------------------------------------------------- #
 
 # ---------------------------------------------------------------------------- #
 # Check R version and load packages ----
 # ---------------------------------------------------------------------------- #
 
-# Note: Exact R version used for this script is unknown
+# Note: Exact R version used for this script is unknown. Assume R 3.6.1 was used
+# because it is the most recent version relative to the groundhog_day.
+
+script_R_version <- "R version 3.6.1 (2019-07-05)"
+current_R_version <- R.Version()$version.string
+
+if(current_R_version != script_R_version) {
+   warning(paste0("This script is based on ", script_R_version,
+                  ". You are running ", current_R_version, "."))
+}
 
 library(groundhog)
+meta.groundhog("2021-07-01")
 groundhog_day <- "2019-11-02"
 
 groundhog.library(psych, groundhog_day)

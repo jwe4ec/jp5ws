@@ -16,6 +16,7 @@ if(current_R_version != script_R_version) {
 }
 
 library(groundhog)
+meta.groundhog("2021-07-01")
 groundhog_day <- "2021-05-20"
 
 groundhog.library(data.table, groundhog_day)
@@ -527,6 +528,7 @@ abline(lm(total2baseline$posIndSum ~ as.numeric(total2baseline$educationGrpNew2)
 plot(as.numeric(total2baseline$educationGrpNew2), total2baseline$posIndSum)
 abline(lm(total2baseline$posIndSum ~ as.numeric(total2baseline$educationGrpNew2)))
 
+set.seed(1234)
 JonckheereTerpstraTest(total2baseline$posIndSum, total2baseline$educationGrpNew2, 
                        alternative = "two.sided", nperm = 1000)
 
@@ -546,7 +548,7 @@ GoodmanKruskalGamma(total2baseline$educationGrpNew2, total2baseline$age,
                     conf.level = .95)
 
 #### Pearson correlation has small (r = .10) to medium (r = .30) effect size. A
-#### large effect wize would be r = .50.
+#### large effect size would be r = .50.
 
 ### Employment
 
@@ -619,12 +621,13 @@ ggplot(total2baseline, aes(posIndSum)) +
 
 anova(lm(total2baseline$posIndSum ~ total2baseline$incomeNew2))
 
+set.seed(1234)
 JonckheereTerpstraTest(total2baseline$posIndSum, total2baseline$incomeNew2, 
                        alternative = "two.sided", nperm = 1000)
 
 ### Country
 
-#### Group countries per "6b_country_groupings.xlsx" so each Continental Region 
+#### Group countries per "09_country_groupings.xlsx" so each Continental Region 
 #### or Sub-Region has at least 5 subjects. Prefer Sub-Regions over Continental 
 #### Regions when Sub-Regions have at least 5 subjects. Continental Regions and
 #### Sub-Regions were obtained from https://unstats.un.org/unsd/methodology/m49/

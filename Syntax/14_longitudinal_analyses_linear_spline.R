@@ -16,6 +16,7 @@ if(current_R_version != script_R_version) {
 }
 
 library(groundhog)
+meta.groundhog("2021-07-01")
 groundhog_day <- "2021-05-20"
 
 groundhog.library(mitml, groundhog_day)
@@ -55,10 +56,16 @@ Completers <- subset(p, txCompSample == 1)
 # Define writeresultsExpl function ----
 # ---------------------------------------------------------------------------- #
 
-# Define function for linear_spline analysis models of posExpBiasScale and negExpBiasScale
+# Define function for linear_spline analysis models
 
 writeresults_ls <- function(data, path, c.levels, sample, compare) {
   print(paste0("Current working directory: ", path))
+  
+  # Create empty list to store results for each outcome
+  
+  result_list <- list()
+  
+  # Write results to file
   
   sink(file = path)
   
@@ -69,7 +76,9 @@ writeresults_ls <- function(data, path, c.levels, sample, compare) {
   print("-------------------------------------------------------------------")
   cat("\n")
   
-  for (outcome in list("posExpBiasScale", "negExpBiasScale")) {
+  for (outcome in list("posExpBiasScale", "negExpBiasScale", "depressionScale",
+                       "anxietyScale", "selfEffScale", "growthMindScale",
+                       "optimismScale")) {
     x <- data
     n_imp_datasets <- length(x)
     
@@ -182,11 +191,20 @@ writeresults_ls <- function(data, path, c.levels, sample, compare) {
     print("Number of observations (after imputation) at each session by condition:")
     cat("\n")
     obs <- as.data.frame.matrix(table(x[[1]]$session_int, x[[1]]$condition))
-    print(data.frame(obs, 
-                     "session_int" = row.names(obs), 
-                     "time1" = c(0, 1, 2, 3, 4, 4), 
-                     "time2" = c(0, 0, 0, 0, 0, 1)),
-          row.names = FALSE)
+
+    if (outcome != "posExpBiasScale" & outcome != "negExpBiasScale") {
+      obs <- data.frame(obs,
+                        "session_int" = row.names(obs),
+                        "time1" = c(0, 2, 4, 4),
+                        "time2" = c(0, 0, 0, 1))
+    } else {
+      obs <- data.frame(obs,
+                        "session_int" = row.names(obs),
+                        "time1" = c(0, 1, 2, 3, 4, 4),
+                        "time2" = c(0, 0, 0, 0, 0, 1))
+    }
+    
+    print(obs, row.names = FALSE)
     cat("\n")
     
     print("Baseline SD:")
@@ -225,10 +243,28 @@ writeresults_ls <- function(data, path, c.levels, sample, compare) {
     
     alpha = .05/2
     
-    modelList <- with(x, lme(fml, 
-                             random = ~ 1 + time1 | participantId,
-                             control = lmeControl(opt = "optim"), 
-                             method = "REML"))
+    if ((deparse(substitute(data)) == "impList_ls" &
+         identical(c.levels, "POSITIVE") &
+         deparse(substitute(sample)) == "Completers" &
+         compare == FALSE &
+         outcome == "anxietyScale") |
+        (deparse(substitute(data)) == "impList_ls" &
+         identical(c.levels, "FIFTY_FIFTY_BLOCKED") &
+         deparse(substitute(sample)) == "Completers" &
+         compare == FALSE &
+         outcome == "growthMindScale")) {
+      modelList <- with(x, lme(fml, 
+                               random = ~ 1 + time1 | participantId,
+                               control = lmeControl(opt = "optim",
+                                                    msMaxIter = 1e9), 
+                               method = "REML"))
+    } else {
+      modelList <- with(x, lme(fml, 
+                               random = ~ 1 + time1 | participantId,
+                               control = lmeControl(opt = "optim"), 
+                               method = "REML"))
+    }
+
     cat("\n")
     print(modelList[[1]]$call)
     pooled <- testEstimates(modelList, extra.pars = TRUE, df.com = df)
@@ -382,8 +418,18 @@ writeresults_ls <- function(data, path, c.levels, sample, compare) {
     cat("\n")
     print("-------------------------------------------------------------------")
     cat("\n")
+    
+    # Add results for the outcome to list of results
+    
+    result_list[[outcome]] <- list("df" = df,
+                                   "modelList" = modelList,
+                                   "pooled" = pooled)
   }
   sink()
+  
+  # Return list of results for all outcomes
+  
+  return(result_list)
 }
 
 # ---------------------------------------------------------------------------- #
@@ -392,61 +438,73 @@ writeresults_ls <- function(data, path, c.levels, sample, compare) {
 
 # ITT
 
-writeresults_ls(impList_ls, 
-                './Results/Longitudinal Outcome - Linear Spline/ITT/4conditions_vs_POSITIVE.txt',
-                c("POSITIVE", "POSITIVE_NEGATION",
-                  "FIFTY_FIFTY_BLOCKED", "FIFTY_FIFTY_RANDOM", "NEUTRAL"), 
-                ITT, TRUE)
-writeresults_ls(impList_ls, 
-                './Results/Longitudinal Outcome - Linear Spline/ITT/4conditions_vs_FIFTY_FIFTY_RANDOM.txt',
-                c("FIFTY_FIFTY_RANDOM", "FIFTY_FIFTY_BLOCKED",
-                  "POSITIVE_NEGATION", "POSITIVE", "NEUTRAL"), 
-                ITT, TRUE)
-writeresults_ls(impList_ls, 
-                './Results/Longitudinal Outcome - Linear Spline/ITT/POSITIVE_NEGATION.txt', 
-                c("POSITIVE_NEGATION"), 
-                ITT, FALSE)
-writeresults_ls(impList_ls, 
-                './Results/Longitudinal Outcome - Linear Spline/ITT/POSITIVE.txt', 
-                c("POSITIVE"), 
-                ITT, FALSE)
-writeresults_ls(impList_ls, 
-                './Results/Longitudinal Outcome - Linear Spline/ITT/FIFTY_FIFTY_BLOCKED.txt', 
-                c("FIFTY_FIFTY_BLOCKED"), 
-                ITT, FALSE)
-writeresults_ls(impList_ls, 
-                './Results/Longitudinal Outcome - Linear Spline/ITT/FIFTY_FIFTY_RANDOM.txt', 
-                c("FIFTY_FIFTY_RANDOM"), 
-                ITT, FALSE)
+itt_four_conditions_vs_positive <- 
+  writeresults_ls(impList_ls, 
+                  './Results/Longitudinal Outcome - Linear Spline/ITT/4conditions_vs_POSITIVE.txt',
+                  c("POSITIVE", "POSITIVE_NEGATION",
+                    "FIFTY_FIFTY_BLOCKED", "FIFTY_FIFTY_RANDOM", "NEUTRAL"), 
+                  ITT, TRUE)
+itt_four_conditions_vs_fifty_fifty_random <-
+  writeresults_ls(impList_ls, 
+                  './Results/Longitudinal Outcome - Linear Spline/ITT/4conditions_vs_FIFTY_FIFTY_RANDOM.txt',
+                  c("FIFTY_FIFTY_RANDOM", "FIFTY_FIFTY_BLOCKED",
+                    "POSITIVE_NEGATION", "POSITIVE", "NEUTRAL"), 
+                  ITT, TRUE)
+itt_positive_negation <- 
+  writeresults_ls(impList_ls, 
+                  './Results/Longitudinal Outcome - Linear Spline/ITT/POSITIVE_NEGATION.txt', 
+                  c("POSITIVE_NEGATION"), 
+                  ITT, FALSE)
+itt_positive <-
+  writeresults_ls(impList_ls, 
+                  './Results/Longitudinal Outcome - Linear Spline/ITT/POSITIVE.txt', 
+                  c("POSITIVE"), 
+                  ITT, FALSE)
+itt_fifty_fifty_blocked <-
+  writeresults_ls(impList_ls, 
+                  './Results/Longitudinal Outcome - Linear Spline/ITT/FIFTY_FIFTY_BLOCKED.txt', 
+                  c("FIFTY_FIFTY_BLOCKED"), 
+                  ITT, FALSE)
+itt_fifty_fifty_random <- 
+  writeresults_ls(impList_ls, 
+                  './Results/Longitudinal Outcome - Linear Spline/ITT/FIFTY_FIFTY_RANDOM.txt', 
+                  c("FIFTY_FIFTY_RANDOM"), 
+                  ITT, FALSE)
 
 # Completers
 
-writeresults_ls(impList_ls, 
-                './Results/Longitudinal Outcome - Linear Spline/Completers/4conditions_vs_POSITIVE.txt',
-                c("POSITIVE", "POSITIVE_NEGATION",
-                  "FIFTY_FIFTY_BLOCKED", "FIFTY_FIFTY_RANDOM", "NEUTRAL"), 
-                Completers, TRUE)
-writeresults_ls(impList_ls, 
-                './Results/Longitudinal Outcome - Linear Spline/Completers/4conditions_vs_FIFTY_FIFTY_RANDOM.txt',
-                c("FIFTY_FIFTY_RANDOM", "FIFTY_FIFTY_BLOCKED",
-                  "POSITIVE_NEGATION", "POSITIVE", "NEUTRAL"), 
-                Completers, TRUE)
-writeresults_ls(impList_ls, 
-                './Results/Longitudinal Outcome - Linear Spline/Completers/POSITIVE_NEGATION.txt', 
-                c("POSITIVE_NEGATION"), 
-                Completers, FALSE)
-writeresults_ls(impList_ls, 
-                './Results/Longitudinal Outcome - Linear Spline/Completers/POSITIVE.txt', 
-                c("POSITIVE"), 
-                Completers, FALSE)
-writeresults_ls(impList_ls, 
-                './Results/Longitudinal Outcome - Linear Spline/Completers/FIFTY_FIFTY_BLOCKED.txt', 
-                c("FIFTY_FIFTY_BLOCKED"), 
-                Completers, FALSE)
-writeresults_ls(impList_ls, 
-                './Results/Longitudinal Outcome - Linear Spline/Completers/FIFTY_FIFTY_RANDOM.txt', 
-                c("FIFTY_FIFTY_RANDOM"), 
-                Completers, FALSE)
+pp_four_conditions_vs_positive <- 
+  writeresults_ls(impList_ls, 
+                  './Results/Longitudinal Outcome - Linear Spline/Completers/4conditions_vs_POSITIVE.txt',
+                  c("POSITIVE", "POSITIVE_NEGATION",
+                    "FIFTY_FIFTY_BLOCKED", "FIFTY_FIFTY_RANDOM", "NEUTRAL"), 
+                  Completers, TRUE)
+pp_four_conditions_vs_fifty_fifty_random <-
+  writeresults_ls(impList_ls, 
+                  './Results/Longitudinal Outcome - Linear Spline/Completers/4conditions_vs_FIFTY_FIFTY_RANDOM.txt',
+                  c("FIFTY_FIFTY_RANDOM", "FIFTY_FIFTY_BLOCKED",
+                    "POSITIVE_NEGATION", "POSITIVE", "NEUTRAL"), 
+                  Completers, TRUE)
+pp_positive_negation <- 
+  writeresults_ls(impList_ls, 
+                  './Results/Longitudinal Outcome - Linear Spline/Completers/POSITIVE_NEGATION.txt', 
+                  c("POSITIVE_NEGATION"), 
+                  Completers, FALSE)
+pp_positive <- 
+  writeresults_ls(impList_ls, 
+                  './Results/Longitudinal Outcome - Linear Spline/Completers/POSITIVE.txt', 
+                  c("POSITIVE"), 
+                  Completers, FALSE)
+pp_fifty_fifty_blocked <-
+  writeresults_ls(impList_ls, 
+                  './Results/Longitudinal Outcome - Linear Spline/Completers/FIFTY_FIFTY_BLOCKED.txt', 
+                  c("FIFTY_FIFTY_BLOCKED"), 
+                  Completers, FALSE)
+pp_fifty_fifty_random <- 
+  writeresults_ls(impList_ls, 
+                  './Results/Longitudinal Outcome - Linear Spline/Completers/FIFTY_FIFTY_RANDOM.txt', 
+                  c("FIFTY_FIFTY_RANDOM"), 
+                  Completers, FALSE)
 
 # ---------------------------------------------------------------------------- #
 # Longitudinal analyses with 3 conditions ----
@@ -454,46 +512,86 @@ writeresults_ls(impList_ls,
 
 # ITT
 
-writeresults_ls(impList_ls2, 
+itt_two_conditions_vs_neutral <- 
+  writeresults_ls(impList_ls2, 
                 './Results/Longitudinal Outcome - Linear Spline/ITT/2conditions_vs_NEUTRAL.txt', 
                 c("NEUTRAL", "BothPositive", "BothFiftyFifty"), 
                 ITT, TRUE)
-writeresults_ls(impList_ls2, 
-                './Results/Longitudinal Outcome - Linear Spline/ITT/2conditions_vs_BothFiftyFifty.txt', 
-                c("BothFiftyFifty", "BothPositive", "NEUTRAL"), 
-                ITT, TRUE)
-writeresults_ls(impList_ls2, 
-                './Results/Longitudinal Outcome - Linear Spline/ITT/NEUTRAL.txt', 
-                c("NEUTRAL"), 
-                ITT, FALSE)
-writeresults_ls(impList_ls2, 
-                './Results/Longitudinal Outcome - Linear Spline/ITT/BothPositive.txt', 
-                c("BothPositive"), 
-                ITT, FALSE)
-writeresults_ls(impList_ls2, 
-                './Results/Longitudinal Outcome - Linear Spline/ITT/BothFiftyFifty.txt', 
-                c("BothFiftyFifty"), 
-                ITT, FALSE)
+itt_two_conditions_vs_both_fifty_fifty <-
+  writeresults_ls(impList_ls2, 
+                  './Results/Longitudinal Outcome - Linear Spline/ITT/2conditions_vs_BothFiftyFifty.txt', 
+                  c("BothFiftyFifty", "BothPositive", "NEUTRAL"), 
+                  ITT, TRUE)
+itt_neutral <-
+  writeresults_ls(impList_ls2, 
+                  './Results/Longitudinal Outcome - Linear Spline/ITT/NEUTRAL.txt', 
+                  c("NEUTRAL"), 
+                  ITT, FALSE)
+itt_both_positive <-
+  writeresults_ls(impList_ls2, 
+                  './Results/Longitudinal Outcome - Linear Spline/ITT/BothPositive.txt', 
+                  c("BothPositive"), 
+                  ITT, FALSE)
+itt_both_fifty_fifty <-
+  writeresults_ls(impList_ls2, 
+                  './Results/Longitudinal Outcome - Linear Spline/ITT/BothFiftyFifty.txt', 
+                  c("BothFiftyFifty"), 
+                  ITT, FALSE)
 
 # Completers
 
-writeresults_ls(impList_ls2, 
-                './Results/Longitudinal Outcome - Linear Spline/Completers/2conditions_vs_NEUTRAL.txt', 
-                c("NEUTRAL", "BothPositive", "BothFiftyFifty"), 
-                Completers, TRUE)
-writeresults_ls(impList_ls2, 
-                './Results/Longitudinal Outcome - Linear Spline/Completers/2conditions_vs_BothFiftyFifty.txt', 
-                c("BothFiftyFifty", "BothPositive", "NEUTRAL"), 
-                Completers, TRUE)
-writeresults_ls(impList_ls2, 
-                './Results/Longitudinal Outcome - Linear Spline/Completers/NEUTRAL.txt', 
-                c("NEUTRAL"), 
-                Completers, FALSE)
-writeresults_ls(impList_ls2, 
-                './Results/Longitudinal Outcome - Linear Spline/Completers/BothPositive.txt', 
-                c("BothPositive"), 
-                Completers, FALSE)
-writeresults_ls(impList_ls2, 
-                './Results/Longitudinal Outcome - Linear Spline/Completers/BothFiftyFifty.txt', 
-                c("BothFiftyFifty"), 
-                Completers, FALSE)
+pp_two_conditions_vs_neutral <-
+  writeresults_ls(impList_ls2, 
+                  './Results/Longitudinal Outcome - Linear Spline/Completers/2conditions_vs_NEUTRAL.txt', 
+                  c("NEUTRAL", "BothPositive", "BothFiftyFifty"), 
+                  Completers, TRUE)
+pp_two_conditions_vs_both_fifty_fifty <-
+  writeresults_ls(impList_ls2, 
+                  './Results/Longitudinal Outcome - Linear Spline/Completers/2conditions_vs_BothFiftyFifty.txt', 
+                  c("BothFiftyFifty", "BothPositive", "NEUTRAL"), 
+                  Completers, TRUE)
+pp_neutral <- 
+  writeresults_ls(impList_ls2, 
+                  './Results/Longitudinal Outcome - Linear Spline/Completers/NEUTRAL.txt', 
+                  c("NEUTRAL"), 
+                  Completers, FALSE)
+pp_both_positive <-
+  writeresults_ls(impList_ls2, 
+                  './Results/Longitudinal Outcome - Linear Spline/Completers/BothPositive.txt', 
+                  c("BothPositive"), 
+                  Completers, FALSE)
+pp_both_fifty_fifty <- 
+  writeresults_ls(impList_ls2, 
+                  './Results/Longitudinal Outcome - Linear Spline/Completers/BothFiftyFifty.txt', 
+                  c("BothFiftyFifty"), 
+                  Completers, FALSE)
+
+# ---------------------------------------------------------------------------- #
+# Combine results into list and save ----
+# ---------------------------------------------------------------------------- #
+
+result_itt <- list("four_conditions_vs_positive" = itt_four_conditions_vs_positive,
+                   "four_conditions_vs_fifty_fifty_random" = itt_four_conditions_vs_fifty_fifty_random,
+                   "positive_negation" = itt_positive_negation,
+                   "positive" = itt_positive,
+                   "fifty_fifty_blocked" = itt_fifty_fifty_blocked,
+                   "fifty_fifty_random" = itt_fifty_fifty_random,
+                   "two_conditions_vs_neutral" = itt_two_conditions_vs_neutral,
+                   "two_conditions_vs_both_fifty_fifty" = itt_two_conditions_vs_both_fifty_fifty,
+                   "neutral" = itt_neutral,
+                   "both_positive" = itt_both_positive,
+                   "both_fifty_fifty" = itt_both_fifty_fifty)
+result_pp <- list("four_conditions_vs_positive" = pp_four_conditions_vs_positive,
+                  "four_conditions_vs_fifty_fifty_random" = pp_four_conditions_vs_fifty_fifty_random,
+                  "positive_negation" = pp_positive_negation,
+                  "positive" = pp_positive,
+                  "fifty_fifty_blocked" = pp_fifty_fifty_blocked,
+                  "fifty_fifty_random" = pp_fifty_fifty_random,
+                  "two_conditions_vs_neutral" = pp_two_conditions_vs_neutral,
+                  "two_conditions_vs_both_fifty_fifty" = pp_two_conditions_vs_both_fifty_fifty,
+                  "neutral" = pp_neutral,
+                  "both_positive" = pp_both_positive,
+                  "both_fifty_fifty" = pp_both_fifty_fifty)
+
+save(result_itt, file = "./Results/Longitudinal Outcome - Linear Spline/ITT/result_itt.RData")
+save(result_pp, file = "./Results/Longitudinal Outcome - Linear Spline/Completers/result_pp.RData")

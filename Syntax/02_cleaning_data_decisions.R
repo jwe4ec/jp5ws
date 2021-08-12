@@ -7,9 +7,9 @@
 # Notes ----
 # ---------------------------------------------------------------------------- #
 
-# This script is a companion to "1a_cleaning_data.R" and depends on packages
+# This script is a companion to "02_cleaning_data.R" and depends on packages
 # loaded and objects defined in that script. The present script documents the 
-# decisions for cleaning multiple entries implemented in "1a_cleaning_data.R".
+# decisions for cleaning multiple entries implemented in "02_cleaning_data.R".
 
 # ---------------------------------------------------------------------------- #
 # Investigate multiple entries ----

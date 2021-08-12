@@ -16,6 +16,7 @@ if(current_R_version != script_R_version) {
 }
 
 library(groundhog)
+meta.groundhog("2021-07-01")
 groundhog_day <- "2021-05-20"
 
 groundhog.library(dplyr, groundhog_day)
@@ -36,7 +37,7 @@ groundhog.library(dplyr, groundhog_day)
 
 # Test accounts need to be removed from each table, and each table needs to be
 # checked for multiple entries per subject per time point. See the companion
-# script "1b_cleaning_data_decisions.R" for decisions made in cleaning multiple 
+# script "02_cleaning_data_decisions.R" for decisions made in cleaning multiple 
 # entries and the status of implementing those decisions in the present script.
 
 # ---------------------------------------------------------------------------- #
@@ -2208,7 +2209,7 @@ unique(summarySubset$participantRSA)
 length(unique(summarySubset$participantRSA))
 
 # Additional data cleaning for ITT subjects is conducted in the separate script
-# "1c_further_cleaning_demographics.R." Demographic data have not been cleaned 
+# "03_further_cleaning_demographics.R." Demographic data have not been cleaned 
 # for all randomized subjects.
 
 #------------------------------------------------------------------------------#
@@ -2415,7 +2416,7 @@ mentalHealthHxTbl3 <- merge(mentalHealthHxTbl3, tempRandomize,
 write.csv(mentalHealthHxTbl3, file = "./Data/Temp/mentalHealthHxTbl3.csv")
 
 # Additional data cleaning for ITT subjects is conducted in separate script 
-# "1d_further_cleaning_mentalHealthHx.R." Mental health history data have 
+# "04_further_cleaning_mentalHealthHx.R." Mental health history data have 
 # not been cleaned for all randomized subjects.
 
 #------------------------------------------------------------------------------#

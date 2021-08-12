@@ -16,6 +16,7 @@ if(current_R_version != script_R_version) {
 }
 
 library(groundhog)
+meta.groundhog("2021-07-01")
 groundhog_day <- "2021-05-20"
 
 groundhog.library(jomo, groundhog_day)

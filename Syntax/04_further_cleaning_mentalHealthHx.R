@@ -81,18 +81,24 @@ mentalHealthHx.itt$condition <- factor(mentalHealthHx.itt$condition,
 group.size <- summary(as.factor(mentalHealthHx.itt$condition))
 
 # ---------------------------------------------------------------------------- #
-# Further clean mental health history data and compute descriptives ----
+# Clean free responses following "Other" ----
 # ---------------------------------------------------------------------------- #
 
 # TODO: Current diagnoses
 
-table(mentalHealthHx.itt$disorders)
-table(mentalHealthHx.itt$other_Desc)
+mentalHealthHx.itt[grepl("Other", mentalHealthHx.itt$disorders), "other_Desc"]
 
-
-
-
-
+# [10] BPD = personality
+# [16] PMDD = depression
+# [20] Schizoaffective Disorder/ Bipolar 1 with Psychotic features = 
+#        schiz AND bipolar
+# [24] acquired brain injury = dem
+# [35] CPTSD = PSTD
+# [45] Dysthymia, seasonal affective disorder and substance abuse = 
+#        depression AND subst
+# [49] CPTSD = PSTD
+# [50] depression = depression
+# [51] mood disorder and depression with anxiety = depression
 
 
 
@@ -100,41 +106,91 @@ table(mentalHealthHx.itt$other_Desc)
 
 # TODO: Past diagnoses
 
+mentalHealthHx.itt[grepl("Other", mentalHealthHx.itt$pastDisorders), "other_DescNo"]
+
+
+
+
+
+# Current help
+
+mentalHealthHx.itt[grepl("Other", mentalHealthHx.itt$help), "other_HelpCurrent"]
+
+
+
+
+
+# Past help
+
+mentalHealthHx.itt[grepl("Other", mentalHealthHx.itt$pastHelp), "other_HelpPast"]
+
+
+
+
+
+# ---------------------------------------------------------------------------- #
+# Further clean mental health history data and compute descriptives ----
+# ---------------------------------------------------------------------------- #
+
+# Current diagnoses
+
+table(mentalHealthHx.itt$disorders)
+table(mentalHealthHx.itt$other_Desc)
+
+sum(grepl("PTSD", mentalHealthHx.itt$disorders)) # Typo in codebook
+sum(grepl("PSTD", mentalHealthHx.itt$disorders)) # Search for "PSTD" instead
+
+sum(grepl("subst", mentalHealthHx.itt$disorders)) # Not sure why Jianhui has 0
+
+sum(grepl("other", mentalHealthHx.itt$disorders)) # Typo in codebook
+sum(grepl("Other", mentalHealthHx.itt$disorders)) # Search for "Other" instead
+
+
+
+
+
+# Past diagnoses
+
 table(mentalHealthHx.itt$pastDisorders)
 table(mentalHealthHx.itt$other_DescNo)
 
+sum(grepl("PTSD", mentalHealthHx.itt$pastDisorders)) # Typo in codebook
+sum(grepl("PSTD", mentalHealthHx.itt$pastDisorders)) # Search for "PSTD" instead
+
+sum(grepl("subst", mentalHealthHx.itt$pastDisorders)) # Not sure why Jianhui has 0
+
+sum(grepl("other", mentalHealthHx.itt$pastDisorders)) # Typo in codebook
+sum(grepl("Other", mentalHealthHx.itt$pastDisorders)) # Search for "Other" instead
 
 
 
 
 
-
-
-
-
-# TODO: Current help
+# Current help
 
 table(mentalHealthHx.itt$help)
 table(mentalHealthHx.itt$other_HelpCurrent)
 
+sum(grepl("school_counselor", mentalHealthHx.itt$help)) # Not sure why Jianhui has 0
+
+sum(grepl("religious_leader", mentalHealthHx.itt$help)) # Not sure why Jianhui has 0
+
+sum(grepl("support_group", mentalHealthHx.itt$help)) # Not sure why Jianhui has 0
 
 
 
 
 
-
-
-
-
-# TODO: Past help
+# Past help
 
 table(mentalHealthHx.itt$pastHelp)
 table(mentalHealthHx.itt$other_HelpPast)
 
+sum(grepl("school_counselor", mentalHealthHx.itt$pastHelp)) # Not sure why Jianhui has 0
 
+sum(grepl("religious_leader", mentalHealthHx.itt$pastHelp)) # Not sure why Jianhui has 0
 
-
-
+sum(grepl("support_group", mentalHealthHx.itt$pastHelp)) # Not sure why Jianhui has 0
 
 
 

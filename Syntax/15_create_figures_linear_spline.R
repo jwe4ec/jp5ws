@@ -110,24 +110,38 @@ compute_pred_means <- function(modelList) {
   return(pred_means)
 }
 
-# Define function to plot estimated means and standard errors
+# Define function to plot estimated means and standard errors. Colors obtained
+# from Color Brewer 2.0 three-class Dark2 palette
+# (https://colorbrewer2.org/#type=qualitative&scheme=Dark2&n=3). Checked for
+# vision deficiency using HCL Wizard (http://hclwizard.org:3000/cvdemulator/).
 
 create_plot <- function(pred_means, title, y_title, scale_min, scale_max, 
                         legend_position) {
   ggplot(pred_means, 
-         aes(x = assessment, y = mean, group = condition, linetype = condition)) +
+         aes(x = assessment, y = mean, 
+             group = condition, color = condition, linetype = condition)) +
     geom_line() +
     geom_point() +
     geom_errorbar(aes(ymin = mean - se, ymax = mean + se),
-                  width = .2) +
+                  width = .3) +
     labs(title = title, 
          x = "Assessment",
          y = y_title) +
-    scale_linetype_discrete(name = "Condition") +
+    scale_linetype_manual(name = "Condition",
+                          values = c("Both Positive" = "longdash",
+                                     "Both 50/50" = "solid",
+                                     "Neutral Control" = "twodash")) +
+    scale_color_manual(name = "Condition",
+                       values = c("Both Positive" = "#1b9e77", 
+                                  "Both 50/50" = "#7570b3", 
+                                  "Neutral Control" = "#d95f02")) +
     scale_y_continuous(breaks = scale_min:scale_max, 
                        limits = c(scale_min, scale_max)) +
     theme_classic() +
-    theme(plot.title = element_text(hjust = 0.5)) +
+    theme(plot.title = element_text(hjust = 0.5),
+          legend.title = element_text(size = 14),
+          legend.text = element_text(size = 11),
+          legend.key.width = unit(2, "cm")) +
     theme(axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0))) +
     theme(axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0))) +
     theme(legend.position = legend_position)

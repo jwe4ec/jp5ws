@@ -115,14 +115,15 @@ compute_pred_means <- function(modelList) {
 # (https://colorbrewer2.org/#type=qualitative&scheme=Dark2&n=3). Checked for
 # vision deficiency using HCL Wizard (http://hclwizard.org:3000/cvdemulator/).
 
-create_plot <- function(pred_means, title, y_title, scale_min, scale_max, 
-                        legend_position) {
+create_plot <- function(pred_means, hidden_pts, title, y_title, scale_min, 
+                        scale_max, legend_position) {
   ggplot(pred_means, 
          aes(x = assessment, y = mean, 
              group = condition, color = condition, linetype = condition)) +
     geom_line() +
-    geom_point() +
+    geom_point(data = pred_means[!(pred_means$assessment %in% hidden_pts), ]) +
     geom_errorbar(aes(ymin = mean - se, ymax = mean + se),
+                  pred_means[!(pred_means$assessment %in% hidden_pts), ],
                   width = .3) +
     labs(title = title, 
          x = "Assessment",
@@ -171,25 +172,25 @@ pred_means_optimismScale <-
 # Create plots
 
 p_posExpBiasScale <- 
-  create_plot(pred_means_posExpBiasScale, "Positive Expectancy Bias", 
+  create_plot(pred_means_posExpBiasScale, NA, "Positive Expectancy Bias", 
               "Average Item Score", 1, 7, c(0.8, 0.2))
 p_negExpBiasScale <- 
-  create_plot(pred_means_negExpBiasScale, "Negative Expectancy Bias", 
+  create_plot(pred_means_negExpBiasScale, NA, "Negative Expectancy Bias", 
               "Average Item Score", 1, 7, c(0.8, 0.8))
 p_anxietyScale <- 
-  create_plot(pred_means_anxietyScale, "Anxiety Symptoms", 
+  create_plot(pred_means_anxietyScale, c("Session 1", "Session 3"), "Anxiety Symptoms", 
               "Sum Score", 0, 6, c(0.8, 0.8))
 p_depressionScale <- 
-  create_plot(pred_means_depressionScale, "Depression Symptoms",
+  create_plot(pred_means_depressionScale, c("Session 1", "Session 3"), "Depression Symptoms",
               "Sum Score", 0, 6, c(0.8, 0.8))
 p_selfEffScale <- 
-  create_plot(pred_means_selfEffScale, "Self-Efficacy", 
+  create_plot(pred_means_selfEffScale, c("Session 1", "Session 3"), "Self-Efficacy", 
               "Average Item Score", 0, 4, c(0.8, 0.2))
 p_growthMindScale <- 
-  create_plot(pred_means_growthMindScale, "Growth Mindset", 
+  create_plot(pred_means_growthMindScale, c("Session 1", "Session 3"), "Growth Mindset", 
               "Average Item Score", 0, 4, c(0.8, 0.2))
 p_optimismScale <- 
-  create_plot(pred_means_optimismScale, "Optimism", 
+  create_plot(pred_means_optimismScale, c("Session 1", "Session 3"), "Optimism", 
               "Average Item Score", 0, 4, c(0.8, 0.2))
 
 # Arrange plots for posExpBiasScale, negExpBiasScale, selfEffScale, and optimismScale

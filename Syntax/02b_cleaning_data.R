@@ -2216,10 +2216,10 @@ length(unique(summarySubset$participantRSA))
 # Import mentalhealthhistory table ----
 #------------------------------------------------------------------------------#
 
-# Import data from MentalHealthHistory_recovered_Sep_10_2018.csv.
+# Import data from MentalHealthHistory_recovered_Sep_10_2018-redacted.csv.
 
 mentalHealthHxTbl <- 
-  read.csv("./Data/Raw/MentalHealthHistory_recovered_Sep_10_2018.csv", 
+  read.csv("./Data/Raw/MentalHealthHistory_recovered_Sep_10_2018-redacted.csv", 
            header = TRUE)
 
 # Remove 29 test accounts.
@@ -2529,12 +2529,6 @@ evalTbl3 <- merge(evalTbl2, tempRandomize,
 
 write.csv(evalTbl3, file = "./Data/Temp/evalTbl3.csv", row.names = FALSE)
 
-# TODO: Additional data cleaning is conducted in separate script, if needed
-
-
-
-
-
 #------------------------------------------------------------------------------#
 # Import reasons for ending table ----
 #------------------------------------------------------------------------------#
@@ -2649,12 +2643,6 @@ reasonEndTbl3 <- merge(reasonEndTbl3, tempRandomize,
 
 write.csv(reasonEndTbl3, file = "./Data/Temp/reasonEndTbl3.csv",
           row.names = FALSE)
-
-# TODO: Additional data cleaning is conducted in separate script, if needed
-
-
-
-
 
 #------------------------------------------------------------------------------#
 # Build data file ----

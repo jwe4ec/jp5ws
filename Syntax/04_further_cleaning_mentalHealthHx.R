@@ -160,7 +160,7 @@ View(mentalHealthHx_itt[grepl("Other", mentalHealthHx_itt$help) |
 
 # For participant 277, given "other_HelpCurrent" containing "mental health group", 
 # replace "Other" in "help" with "support_group"
-  mentalHealthHx_itt[mentalHealthHx_itt$participantId == 277, "help"] <-
+mentalHealthHx_itt[mentalHealthHx_itt$participantId == 277, "help"] <-
   sub("Other", "support_group", 
       mentalHealthHx_itt[mentalHealthHx_itt$participantId == 277, "help"])
 

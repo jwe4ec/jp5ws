@@ -70,22 +70,21 @@ deidentified <- c("Credibility_recovered_Sep_10_2018.csv",
 # Import data ----
 # ---------------------------------------------------------------------------- #
 
-# Obtain file names of raw data files, regardless of whether they are CSV files
+# Obtain file names of raw CSV data files
 
 raw_data_dir <- paste0(wd_dir, "/Data/Raw")
-filenames <- list.files(raw_data_dir, full.names = FALSE)
+filenames_csv <- list.files(raw_data_dir, pattern = "*.csv", full.names = FALSE)
 
 # Report files not yet checked for deidentification. Once a file is checked,
 # add its file name to the "deidentified" character vector above.
 
-if (length(setdiff(filenames, deidentified)) != 0) {
+if (length(setdiff(filenames_csv, deidentified)) != 0) {
   stop(paste0("This file needs to be checked for deidentification: ",
-               setdiff(filenames, deidentified)))
+               setdiff(filenames_csv, deidentified)))
 }
 
 # Import CSV data files and store them in a list
 
-filenames_csv <- list.files(raw_data_dir, pattern = "*.csv", full.names = FALSE)
 data <- lapply(paste0(raw_data_dir, "/", filenames_csv), read.csv)
 
 # Name each data file in the list

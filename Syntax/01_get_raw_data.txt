@@ -5,9 +5,9 @@
 
 # ---------------------------------------------------------------------------- #
 # Notes ----
-#
-# This script contains code obtained from Daniel Funk and Claudia Calicho-Mamani
 # ---------------------------------------------------------------------------- #
+
+# This script contains code obtained from Daniel Funk and Claudia Calicho-Mamani
 
 # ---------------------------------------------------------------------------- #
 # Produce randomization table ----
@@ -71,7 +71,7 @@ source venv/bin/activate
 
 MTData decode templeton
 
-# Navigate to active_data folder, which is shown here inside Henry Behan’s folder
+# Navigate to active_data folder, which is shown here inside Henry Behan?s folder
 
 cd /home/hb7zz/Data_pool/Templeton/active_data						
 
@@ -80,7 +80,7 @@ cd /home/hb7zz/Data_pool/Templeton/active_data
 
 zip templeton_10_08_2019.zip /home/hb7zz/Data_pool/Templeton/active_data/*10_08*		
 
-# Copy the ZIP file from Henry Behan’s folder to Claudia Calicho-Mamani’s folder
+# Copy the ZIP file from Henry Behan?s folder to Claudia Calicho-Mamani?s folder
 
 cp /home/hb7zz/Data_pool/Templeton/active_data/templeton_10_08_2019.zip			
        /home/cpc4tz/templeton_10_08_2019.zip

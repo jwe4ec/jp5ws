@@ -1,0 +1,118 @@
+# ---------------------------------------------------------------------------- #
+# Get Raw Data
+# Author: Jeremy W. Eberle
+# ---------------------------------------------------------------------------- #
+
+# ---------------------------------------------------------------------------- #
+# Notes ----
+#
+# This script contains code obtained from Daniel Funk and Claudia Calicho-Mamani
+# ---------------------------------------------------------------------------- #
+
+# ---------------------------------------------------------------------------- #
+# Produce randomization table ----
+# ---------------------------------------------------------------------------- #
+
+# The following query was used to produce the table below from an SQL database
+
+## report_Aug_19_2018.csv
+
+p.id,
+CAST(p.admin as UNSIGNED),
+CAST(p.test_account as UNSIGNED),
+tl.date_completed,
+s.conditioning
+from participant as p
+	left outer join study as s on p.study_id = s.id
+	left outer join task_log as tl on p.id = tl.study_id and tl.session_name = 'Eligibility'
+
+# The data are raw, with the conditioning variable coded as follows
+
+## 0 = POSITIVE
+## 1 = POSITIVE_NEGATION
+## 2 = FIFTY_FIFTY_RANDOM
+## 3 = FIFTY_FIFTY_BLOCKED
+## 4 = NEUTRAL
+
+# ---------------------------------------------------------------------------- #
+# Produce other tables ----
+# ---------------------------------------------------------------------------- #
+
+# The following query was used to produce the tables below, which were obtained 
+# from JSON files
+
+## Credibility_recovered_Sep_10_2018.csv
+## Demographics_recovered_Sep_10_2018.csv
+## ExpectancyBias_recovered_Sep_10_2018.csv
+## JsPsychTrial_recovered_Mar_27_2018.csv
+## Phq4_recovered_Sep_10_2018.csv
+## Relatability_recovered_Sep_10_2018.csv
+## TaskLog_recovered_corrected_Sep_10_2018.csv
+## WhatIBelieve_recovered_Sep_10_2018.csv
+
+# Access DataCenter server from Terminal on MacOS
+
+ssh DataCenter
+Sudo -i
+
+# Navigate to folder with JSON files. Each table has multiple JSON files with 
+# different dates. These files come # directly from the MindTrails website.
+
+cd /home/hb7zz/MTData		
+
+# Activate a pre-existing virtual environment (has some packages) that all 
+# subsequent lines are run in
+
+source venv/bin/activate	
+
+# Convert JSON files for Templeton into CSV files and put them in active_data 
+# folder below. For more information about the MTData code below, 
+# see https://github.com/TeachmanLab/MTData.
+
+MTData decode templeton
+
+# Navigate to active_data folder, which is shown here inside Henry Behan’s folder
+
+cd /home/hb7zz/Data_pool/Templeton/active_data						
+
+# Select all the files containing the desired export date (e.g., 10_08) and copy 
+# them into a ZIP file
+
+zip templeton_10_08_2019.zip /home/hb7zz/Data_pool/Templeton/active_data/*10_08*		
+
+# Copy the ZIP file from Henry Behan’s folder to Claudia Calicho-Mamani’s folder
+
+cp /home/hb7zz/Data_pool/Templeton/active_data/templeton_10_08_2019.zip			
+       /home/cpc4tz/templeton_10_08_2019.zip
+
+# Exit virtual environment and exit DataCenter
+
+Exit
+Exit													
+
+# Copy the ZIP file from DataCenter to Desktop
+
+scp DataCenter:templeton_10_08_2019.zip ~/Desktop/
+
+# The ZIP file contains one CSV file per table. These CSV files are the raw data 
+# with two exceptions.
+
+## First, in TaskLog_recovered_corrected_Sep_10_2018.csv, some columns of data 
+## were shifted to correct misalignment in the original CSV file
+
+## Second, in JsPsychTrial_recovered_Mar_27_2018.csv, the original variable rt 
+## was renamed to rt_correct and the original variable name rt_firstReact was 
+## renamed to rt
+
+# ---------------------------------------------------------------------------- #
+# Produce participant table ----
+# ---------------------------------------------------------------------------- #
+
+# The following procedure was used to produce the table below
+
+## T.participant_Mar_27_2018_fixed.csv
+
+# This table was obtained from a different server maintained by UVA Information 
+# Technology Services. A query similar to the one above was sent to that server. 
+# After downloading the data, a script was run to remove columns that contained 
+# identifiable information. The data otherwise are raw.

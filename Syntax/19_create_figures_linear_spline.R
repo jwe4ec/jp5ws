@@ -234,7 +234,13 @@ plot2 <- plot_grid(plot2_grid, plot2_leg, ncol = 1, rel_heights = c(1, .1))
 ggsave2("./Results/Longitudinal Outcome - Linear Spline/ITT/plots/2conditions_vs_NEUTRAL_plot_1.png",
         plot = plot1,
         width = 10, height = 10)
-
 ggsave2("./Results/Longitudinal Outcome - Linear Spline/ITT/plots/2conditions_vs_NEUTRAL_plot_2.png",
+        plot = plot2,
+        width = 10, height = 10)
+
+ggsave2("./Results/Longitudinal Outcome - Linear Spline/ITT/plots/2conditions_vs_NEUTRAL_plot_1.pdf",
+        plot = plot1,
+        width = 10, height = 10)
+ggsave2("./Results/Longitudinal Outcome - Linear Spline/ITT/plots/2conditions_vs_NEUTRAL_plot_2.pdf",
         plot = plot2,
         width = 10, height = 10)
